@@ -105,10 +105,12 @@ Regole: usa esattamente i nomi indicati sopra (niente Mario Rossi o nomi d'esemp
             "meta": {"scenario": s["id"], "stile": stile, "parole": parole, "canale": canale}}
 
 
-def chiama(base, chiave, modello, prompt, tentativi=5):
-    corpo = {"model": modello, "messages": [{"role": "user", "content": prompt}], "temperature": 0.9, "max_tokens": 2500}
+def chiama(base, chiave, modello, prompt, tentativi=5, temperatura=0.9, ragionamento=False):
+    corpo = {"model": modello, "messages": [{"role": "user", "content": prompt}], "temperature": temperatura, "max_tokens": 2500}
     if "openrouter" in base:
         corpo["usage"] = {"include": True}
+        if not modello.endswith(":free") and not ragionamento:
+            corpo["reasoning"] = {"enabled": False}  # testo diretto: più veloce e meno token pagati
     req = urllib.request.Request(base + "/chat/completions", json.dumps(corpo).encode(),
                                  {"Content-Type": "application/json", "Authorization": f"Bearer {chiave}",
                                   "HTTP-Referer": "https://github.com/dacso-ai/protocollo", "X-Title": "Protocollo"})
