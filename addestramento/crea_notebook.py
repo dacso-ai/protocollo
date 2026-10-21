@@ -53,6 +53,8 @@ SALVA_OGNI_MIN = 45
 """)
 
 code("""
+# torchao preinstallato su Kaggle è troppo vecchio e peft rifiuta di partire: non ci serve, lo togliamo
+!pip uninstall -y -q torchao
 !pip install -q "transformers==4.57.1" "peft==0.21.0" "accelerate==1.15.0" "safetensors" "huggingface_hub"
 """)
 
