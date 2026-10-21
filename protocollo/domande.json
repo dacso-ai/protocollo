@@ -1,0 +1,127 @@
+{
+  "versione": "0.1",
+  "gruppi": {
+    "documento": ["tipo", "ufficio", "azione", "scadenza", "giorni", "rischio", "phishing", "dati_sensibili"],
+    "fattura": ["codice_td", "split_payment", "reverse_charge", "ritenuta"],
+    "coppia": ["doppione"]
+  },
+  "domande": {
+    "tipo": {
+      "type": "choice",
+      "instructions": "Che tipo di documento ha ricevuto l'azienda?",
+      "options": [
+        {"id": "fattura", "description": "Fattura di vendita o di acquisto di beni o servizi, anche fattura differita, di acconto o autofattura."},
+        {"id": "nota_credito", "description": "Nota di credito: storna in tutto o in parte una fattura precedente."},
+        {"id": "parcella", "description": "Parcella o fattura di un professionista (avvocato, commercialista, consulente) con ritenuta d'acconto o cassa previdenziale."},
+        {"id": "ddt", "description": "Documento di trasporto (DDT) che accompagna la merce."},
+        {"id": "ordine", "description": "Ordine di acquisto inviato da un cliente."},
+        {"id": "conferma_ordine", "description": "Conferma d'ordine inviata da un fornitore."},
+        {"id": "preventivo", "description": "Preventivo o offerta commerciale con prezzi."},
+        {"id": "sollecito", "description": "Sollecito di pagamento da parte di un fornitore."},
+        {"id": "avviso_bonario", "description": "Avviso bonario o comunicazione di irregolarità dell'Agenzia delle Entrate."},
+        {"id": "cartella", "description": "Cartella di pagamento o avviso dell'Agenzia delle Entrate-Riscossione."},
+        {"id": "inps", "description": "Comunicazione dell'INPS (contributi, DURC, avviso di addebito)."},
+        {"id": "inail", "description": "Comunicazione dell'INAIL (premi, autoliquidazione, infortuni)."},
+        {"id": "f24", "description": "Modello F24: delega da pagare o quietanza di pagamento."},
+        {"id": "diffida", "description": "Diffida o messa in mora inviata da un avvocato o da una controparte."},
+        {"id": "atto_giudiziario", "description": "Atto giudiziario: decreto ingiuntivo, citazione, pignoramento."},
+        {"id": "contratto", "description": "Contratto o proposta di contratto da firmare."},
+        {"id": "candidatura", "description": "Candidatura di lavoro o curriculum vitae."},
+        {"id": "reclamo", "description": "Reclamo di un cliente insoddisfatto."},
+        {"id": "richiesta_cliente", "description": "Richiesta di informazioni o di preventivo da parte di un cliente."},
+        {"id": "pubblicita", "description": "Newsletter, pubblicità o comunicazione promozionale."},
+        {"id": "phishing", "description": "Truffa: finto ente, finta fattura o finto fornitore che chiede di cliccare un link, pagare o cambiare IBAN."}
+      ]
+    },
+    "ufficio": {
+      "type": "choice",
+      "instructions": "Quale ufficio o persona deve occuparsi di questo documento?",
+      "options": [
+        {"id": "amministrazione", "description": "Amministrazione e contabilità: fatture, pagamenti, F24, banche."},
+        {"id": "commerciale", "description": "Ufficio commerciale: clienti, preventivi, ordini, offerte."},
+        {"id": "assistenza", "description": "Assistenza clienti: reclami, guasti, resi."},
+        {"id": "logistica", "description": "Magazzino e logistica: spedizioni, consegne, DDT."},
+        {"id": "personale", "description": "Personale: candidature, dipendenti, INAIL e contributi dei lavoratori."},
+        {"id": "direzione", "description": "Titolare o direzione: contratti e decisioni importanti."},
+        {"id": "commercialista", "description": "Commercialista esterno: avvisi fiscali, cartelle, adempimenti tributari."},
+        {"id": "avvocato", "description": "Avvocato esterno: diffide, atti giudiziari, contenziosi."},
+        {"id": "nessuno", "description": "Nessuno: da cestinare o da segnalare come truffa."}
+      ]
+    },
+    "azione": {
+      "type": "choice",
+      "instructions": "Qual è la prossima azione da fare con questo documento?",
+      "options": [
+        {"id": "pagare", "description": "Pagare un importo."},
+        {"id": "rispondere", "description": "Rispondere al mittente."},
+        {"id": "firmare", "description": "Firmare o accettare."},
+        {"id": "inoltrare", "description": "Inoltrare a un professionista esterno (commercialista, avvocato) perché lo valuti."},
+        {"id": "archiviare", "description": "Registrare e archiviare: non serve altro."},
+        {"id": "cestinare", "description": "Cestinare o segnalare: pubblicità indesiderata o truffa."}
+      ]
+    },
+    "scadenza": {
+      "type": "boolean",
+      "instructions": "Il documento indica un termine o una data entro cui l'azienda deve fare qualcosa (pagare, rispondere, restituire, impugnare)?"
+    },
+    "giorni": {
+      "type": "numeric",
+      "instructions": "Quanti giorni mancano alla scadenza, contando dalla data di ricezione indicata in alto? Se non c'è nessuna scadenza, segnala dati insufficienti.",
+      "unit": "giorni",
+      "anchors": [
+        {"value": 0, "description": "Scade oggi."},
+        {"value": 7, "description": "Scade tra una settimana."},
+        {"value": 15, "description": "Scade tra quindici giorni."},
+        {"value": 30, "description": "Scade tra un mese."},
+        {"value": 60, "description": "Scade tra due mesi."},
+        {"value": 90, "description": "Scade tra tre mesi."}
+      ]
+    },
+    "rischio": {
+      "type": "score",
+      "instructions": "Cosa rischia l'azienda se ignora questo documento?",
+      "levels": [
+        "Niente: è informativo o già concluso.",
+        "Un costo o un cliente perso: un pagamento normale da fare o un cliente da non perdere.",
+        "Sanzioni fiscali o contributive: Agenzia delle Entrate, Riscossione, INPS, INAIL, F24 non pagato.",
+        "Conseguenze legali: diffida, decreto ingiuntivo, pignoramento, causa."
+      ]
+    },
+    "phishing": {
+      "type": "boolean",
+      "instructions": "È una truffa? Per esempio un finto ente, una finta fattura con un link da cliccare, un fornitore che chiede di pagare su un IBAN nuovo, un dominio che imita quello vero."
+    },
+    "dati_sensibili": {
+      "type": "boolean",
+      "instructions": "Contiene dati personali particolari: salute, dati giudiziari di una persona, dati di minori o copia di un documento d'identità?"
+    },
+    "codice_td": {
+      "type": "choice",
+      "instructions": "Che tipo di documento è secondo i codici della fattura elettronica (TipoDocumento)?",
+      "options": [
+        {"id": "TD01", "description": "TD01: fattura ordinaria."},
+        {"id": "TD04", "description": "TD04: nota di credito."},
+        {"id": "TD06", "description": "TD06: parcella."},
+        {"id": "TD17", "description": "TD17: integrazione o autofattura per acquisto di servizi dall'estero."},
+        {"id": "TD24", "description": "TD24: fattura differita che richiama uno o più DDT."},
+        {"id": "altro", "description": "Un altro codice TD."}
+      ]
+    },
+    "split_payment": {
+      "type": "boolean",
+      "instructions": "È in split payment (scissione dei pagamenti, esigibilità IVA S): l'IVA la versa il cliente e non il fornitore?"
+    },
+    "reverse_charge": {
+      "type": "boolean",
+      "instructions": "È in reverse charge (inversione contabile, natura N6): il fornitore non addebita l'IVA perché la deve integrare il cliente?"
+    },
+    "ritenuta": {
+      "type": "boolean",
+      "instructions": "C'è una ritenuta d'acconto da trattenere e versare con F24?"
+    },
+    "doppione": {
+      "type": "boolean",
+      "instructions": "Il Documento 1 e il Documento 2 sono la stessa fattura ricevuta due volte (stesso fornitore, numero, data e importo)?"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+# segreti
+.env
+
+# note interne e file locali
+PIANO.md
+avatar-*.png
+prova-zero/risultati-log.txt
+
+# schemi scaricati da valida.py
+generatore/xsd/
+
+# dati generati in locale
+*.xml
+dati*.jsonl
+__pycache__/
+.DS_Store
