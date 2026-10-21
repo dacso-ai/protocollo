@@ -57,7 +57,11 @@ python3 generatore/genera_llm.py --n 50 --out dati/llm.jsonl # serve una chiave 
 python3 generatore/verifica.py dati/llm.jsonl --ok dati/ok.jsonl --scarti dati/scarti.jsonl
 ```
 
-Usiamo solo modelli la cui licenza permette di addestrare altri modelli sulle risposte (per esempio NVIDIA Nemotron, Qwen, gpt-oss). Nel primo pilota (40 documenti, Nemotron 550B) 38 testi hanno passato i controlli.
+Usiamo solo modelli la cui licenza permette di addestrare altri modelli sulle risposte (per esempio NVIDIA Nemotron, Qwen, gpt-oss, DeepSeek, Mistral). [generatore/verifica_llm.py](generatore/verifica_llm.py) fa rileggere ogni testo a un secondo modello che non vede le etichette.
+
+### Il dataset
+
+**[dacso-ai/protocollo-dati](https://huggingface.co/datasets/dacso-ai/protocollo-dati)** su Hugging Face: **17.459 documenti e 141.471 decisioni**. Sono 6.000 documenti dal generatore e 11.459 scritti da DeepSeek V4 Flash, sopravvissuti alle regole fisse e alla rilettura cieca di Mistral Small 3.2 (su 14.000 generati). Divisi in train 15.713, validation 873 e test 873. Costo totale di generazione e verifica: circa 2,40 $.
 
 ## La prova zero
 
