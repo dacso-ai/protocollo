@@ -14,3 +14,6 @@ generatore/xsd/
 dati*.jsonl
 __pycache__/
 .DS_Store
+
+# dati generati e log
+dati/

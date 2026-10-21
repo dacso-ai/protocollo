@@ -47,6 +47,18 @@ Ogni documento è una riga JSONL:
                "reverse_charge": true, "split_payment": false, "...": "..."}}
 ```
 
+### Documenti scritti da un modello linguistico
+
+Avvisi del Fisco, cartelle, INPS e INAIL, diffide, atti giudiziari, contratti, reclami, ordini, candidature, pubblicità e truffe li scrive un modello a licenza aperta, seguendo i 38 scenari di [generatore/catalogo.py](generatore/catalogo.py). Il modello scrive solo il testo. **Le etichette le decide il programma** e le impone nel prompt: tipo di documento, termine esatto ("entro 30 giorni" o "entro il 14/11/2026"), presenza di dati sensibili, mittente (compresi i domini falsi delle truffe). [generatore/verifica.py](generatore/verifica.py) scarta i testi che non rispettano il prompt.
+
+```bash
+python3 generatore/genera_llm.py --n 5 --a-secco             # prompt e stima dei costi, senza chiamate
+python3 generatore/genera_llm.py --n 50 --out dati/llm.jsonl # serve una chiave in .env (OpenRouter, Groq o Cerebras)
+python3 generatore/verifica.py dati/llm.jsonl --ok dati/ok.jsonl --scarti dati/scarti.jsonl
+```
+
+Usiamo solo modelli la cui licenza permette di addestrare altri modelli sulle risposte (per esempio NVIDIA Nemotron, Qwen, gpt-oss). Nel primo pilota (40 documenti, Nemotron 550B) 38 testi hanno passato i controlli.
+
 ## La prova zero
 
 [prova-zero/](prova-zero/) misura un modello aperto generico, prima di qualsiasi addestramento, su 50 documenti: 28 dal generatore e 22 scritti a mano (avvisi del Fisco, cartella, INPS, INAIL, diffida, decreto ingiuntivo, pignoramento, contratto, candidatura, reclami, ordini, 3 truffe).
