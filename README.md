@@ -4,7 +4,7 @@
 
 Ogni mattina qualcuno apre la PEC e deve capire: è una fattura o un avviso dell'Agenzia delle Entrate? C'è una scadenza? Va al commercialista? È una truffa? Protocollo risponde a queste domande con decisioni a scelta chiusa e probabilità, senza generare testo. È la stessa idea dei modelli "System One" come [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) e del progetto aperto [Rizzo Flow](https://github.com/Rizzo-AI-Academy/rizzo-flow), applicata a quello che solo un'azienda italiana riceve: FatturaPA e codici TD, split payment, reverse charge, F24, avvisi bonari, cartelle, PEC.
 
-> **Stato: v0.0, preparazione.** Il repository contiene oggi le domande, il generatore di documenti con etichette esatte e la "prova zero", cioè quanto sa fare un modello aperto generico prima del nostro addestramento. Il modello addestrato e il benchmark etichettato da professionisti arrivano con la v0.1, prevista per novembre 2026.
+> **Stato: v0.1 del modello, 22/10/2026.** Il modello è su Hugging Face: **[dacso-ai/protocollo-4b](https://huggingface.co/dacso-ai/protocollo-4b)** (GGUF Q8_0 e Q4_K_M, adapter LoRA). Sulla prova zero passa dall'82% al 99% di decisioni giuste rispetto al modello di partenza. Manca ancora il benchmark etichettato da professionisti, previsto per novembre 2026: fino ad allora i numeri vanno letti con le avvertenze della sezione [La prova zero](#la-prova-zero).
 
 > **Avvertenza.** Protocollo smista e segnala. Non sostituisce il commercialista o l'avvocato.
 
@@ -67,17 +67,18 @@ Usiamo solo modelli la cui licenza permette di addestrare altri modelli sulle ri
 
 [prova-zero/](prova-zero/) misura un modello aperto generico, prima di qualsiasi addestramento, su 50 documenti: 28 dal generatore e 22 scritti a mano (avvisi del Fisco, cartella, INPS, INAIL, diffida, decreto ingiuntivo, pignoramento, contratto, candidatura, reclami, ordini, 3 truffe).
 
-Rizzo Flow 4B (Q8_0), 20/10/2026:
+| | Rizzo Flow 4B (20/10) | **Protocollo 4B v0.1** (22/10) |
+|---|---|---|
+| Decisioni giuste | 328/399 (82%) | **394/399 (99%)** |
+| Documenti scritti a mano | 121/157 (77%) | **154/157 (98%)** |
+| Giorni alla scadenza giusti | 13/39 (33%) | **37/39 (95%)** |
+| Azione giusta | 26/44 (59%) | **43/44 (98%)** |
+| Scadenze mancate | 0 su 25 | 0 su 25 |
+| Truffe non viste | 1 su 3 | **0 su 3** |
 
-| | |
-|---|---|
-| Decisioni giuste | **328/399 (82%)** |
-| Scadenze mancate | 0 su 25 |
-| Truffe non viste | 1 su 3 (il cambio di IBAN di un finto fornitore) |
-| Giorni alla scadenza giusti | 13/39 (33%) |
-| Azione giusta | 26/44 (59%) |
+Il modello generico sbagliava proprio dove serve conoscere l'Italia: mandava a pagare avvisi bonari, cartelle, diffide e decreti ingiuntivi invece di passarli al professionista, trattava una nota di credito come una fattura da pagare e non riconosceva come truffa la richiesta di cambiare IBAN. Protocollo v0.1 risponde bene su tutti questi casi.
 
-L'82% è gonfiato dalle domande facili. Il modello generico sbaglia proprio dove serve conoscere l'Italia: manda a pagare avvisi bonari, cartelle, diffide e decreti ingiuntivi invece di passarli al professionista, tratta una nota di credito come una fattura da pagare e non riconosce come truffa la richiesta di cambiare IBAN. Dettagli ed errori uno per uno in [prova-zero/README.md](prova-zero/README.md).
+**Come leggere il 99%.** È un buon segnale, non ancora una prova indipendente: i documenti generati vengono dallo stesso generatore dell'addestramento, quelli scritti a mano li ha scritti chi ha disegnato anche gli scenari, e le risposte di procedura sono scelte nostre che il modello ha imparato. La misura indipendente sarà il benchmark dei professionisti. Dettagli ed errori uno per uno in [prova-zero/README.md](prova-zero/README.md).
 
 ```bash
 cd prova-zero
@@ -87,8 +88,8 @@ python3 valuta.py --url http://127.0.0.1:8017 --nome rizzo-flow-4b-q8   # un ser
 
 ## Prossimi passi
 
-1. Dataset di circa 20.000 documenti: metà dal generatore, metà (PEC, avvisi, truffe, mail) generata con modelli a licenza aperta.
-2. Fine-tuning LoRA di un modello aperto da 4B, partendo da Rizzo Flow.
+1. ~~Dataset di circa 20.000 documenti~~ fatto: 17.459 documenti.
+2. ~~Fine-tuning LoRA partendo da Rizzo Flow~~ fatto: v0.1, 9,4 ore su una T4 gratuita di Kaggle ([addestramento/](addestramento/)). La v0.2 userà tutte le 29.392 domande preparate.
 3. Benchmark pubblico di 600 documenti etichettati da commercialisti, un avvocato e un responsabile amministrativo, con due metriche nostre: **scadenze mancate** e **truffe non viste**.
 4. `protocollo-pec`: uno script che legge una casella PEC in sola lettura e mette un'etichetta a ogni messaggio.
 
