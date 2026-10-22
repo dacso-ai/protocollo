@@ -11,6 +11,27 @@ python3 costruisci.py
 python3 valuta.py --url http://127.0.0.1:8017 --nome rizzo-flow-4b-q8
 ```
 
+## Prima e dopo
+
+| Modello | Decisioni giuste | Documenti scritti a mano | Documenti generati | Scadenze mancate | Truffe non viste |
+|---|---|---|---|---|---|
+| Rizzo Flow 4B Q8_0 (20/10/2026) | 328/399 (82%) | 121/157 (77%) | 207/242 (86%) | 0 su 25 | 1 su 3 |
+| **Protocollo 4B v0.1 Q8_0** (22/10/2026) | **394/399 (99%)** | **154/157 (98%)** | **240/242 (99%)** | 0 su 25 | **0 su 3** |
+
+Stessi 50 documenti, stesso server (`rizzo serve`, llama.cpp b11081, Mac Pro solo CPU). Protocollo v0.1 è Rizzo Flow 4B con un LoRA (r 16) addestrato per 9,4 ore su una T4 di Kaggle con 13.082 domande di [protocollo-train-righe](https://huggingface.co/datasets/dacso-ai/protocollo-train-righe). Dettaglio in [risultati/protocollo-4b-v01-q8.md](risultati/protocollo-4b-v01-q8.md).
+
+I tre errori del primo modello:
+
+| Documento | Rizzo Flow | Protocollo v0.1 |
+|---|---|---|
+| Nota di credito | fattura, da pagare | nota di credito, archiviare |
+| Decreto ingiuntivo (40 giorni) | da pagare, scade tra 12 giorni | inoltrare all'avvocato, scade tra 35 giorni |
+| Cambio IBAN da un dominio simile | rispondere, non è una truffa | truffa, cestinare |
+
+**Come leggere il 99%.** È un buon segnale, non ancora una prova. I 28 documenti generati vengono dallo stesso generatore dell'addestramento, anche se con semi diversi. I 22 scritti a mano sono stati scritti da chi ha disegnato anche gli scenari del dataset. In più le etichette di procedura (per esempio "inoltrare" un avviso bonario al commercialista) le abbiamo scelte noi, e il modello ha imparato le nostre scelte. La misura indipendente sarà il benchmark etichettato da professionisti, su documenti che non abbiamo scritto noi.
+
+Restano 5 errori: un acconto letto come TD01, due conteggi di giorni (58 invece di 43, 16 invece di 11), un reclamo per ritardo mandato al commerciale, una conferma d'ordine da "pagare".
+
 ## Risultato del 20/10/2026 (Rizzo Flow 4B Q8_0, Mac Pro solo CPU)
 
 **328/399 decisioni giuste (82%)**, nessuna scadenza persa su 25, 1 truffa su 3 non vista. Circa 19 s a documento. Dettaglio in [risultati/rizzo-flow-4b-q8.md](risultati/rizzo-flow-4b-q8.md).
